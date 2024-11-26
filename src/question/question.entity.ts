@@ -1,5 +1,11 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
+export type Choice = {
+  label: string;
+  value: string;
+  isCorrect: boolean;
+};
+
 @Entity()
 export class Question {
   @PrimaryGeneratedColumn()
@@ -9,5 +15,5 @@ export class Question {
   question: string;
 
   @Column()
-  answers: string[];
+  choices: Choice[];
 }
