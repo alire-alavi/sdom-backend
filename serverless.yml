@@ -1,0 +1,22 @@
+service: nest-app
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: me-central-1
+
+functions:
+  api:
+    handler: dist/main.handler
+    events:
+      - http:
+          path: /
+          method: ANY
+      - http:
+          path: '{proxy+}'
+          method: ANY
+
+package:
+  include:
+    - dist/**
+    - node_modules/**
+    - package.json
