@@ -14,7 +14,7 @@ export class DynamoDbQuestionRepository implements QuestionRepository {
   private readonly client: DynamoDBDocumentClient;
 
   constructor() {
-    const dynamoClient = new DynamoDBClient({ region: 'mena-central-1' });
+    const dynamoClient = new DynamoDBClient({ region: 'me-central-1' });
     this.client = DynamoDBDocumentClient.from(dynamoClient);
   }
 
