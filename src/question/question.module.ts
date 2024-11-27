@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { QuestionService } from './question.service';
 import { QuestionRepository } from './question.repository';
-import { DynamoDbQuestionRepository } from './dyanmodb-question.repository';
+import { DynamoDbQuestionRepository } from './dynamodb-question.repository';
 import { QuestionController } from './question.controller';
 
 @Module({
