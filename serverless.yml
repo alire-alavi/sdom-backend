@@ -3,10 +3,53 @@ provider:
   name: aws
   runtime: nodejs18.x
   region: me-central-1
+  versionFunctions: false
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:DescribeTable
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource: arn:aws:dynamodb:${self:provider.region}:${aws:accountId}:*
+
+resources:
+  Resources:
+    UsersTable:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        TableName: SdomUsersTable-${sls:stage}
+        AttributeDefinitions:
+          - AttributeName: 'UserId'
+            AttributeType: 'S'
+        KeySchema:
+          - AttributeName: 'UserId'
+            KeyType: 'HASH'
+        BillingMode: PAY_PER_REQUEST
+
+    QuestionsTable:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        TableName: SdomQuestionsTable-${sls:stage}
+        AttributeDefinitions:
+          - AttributeName: 'QuestionId'
+            AttributeType: 'S'
+        KeySchema:
+          - AttributeName: 'QuestionId'
+            KeyType: 'HASH'
+        BillingMode: PAY_PER_REQUEST
 
 functions:
   api:
     handler: dist/main.handler
+    environment:
+      UsersTable: !Ref UsersTable
+      QuestionsTable: !Ref QuestionsTable
     events:
       - http:
           path: /
