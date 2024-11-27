@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { UserRepository } from './user.repository';
-import { User } from './user.entity';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import {
   DynamoDBDocumentClient,
@@ -8,22 +6,28 @@ import {
   GetCommand,
   PutCommand,
 } from '@aws-sdk/lib-dynamodb';
+import { ConfigService } from '@nestjs/config';
+import { fromIni } from '@aws-sdk/credential-providers';
+import { UserRepository } from './user.repository';
+import { User } from './user.entity';
 
 @Injectable()
 export class DynamoDbUserRepository implements UserRepository {
   private readonly client: DynamoDBDocumentClient;
-  public USERS_TABLE: string;
+  private readonly tableName: string;
 
-  constructor() {
-    const dynamoClient = new DynamoDBClient({ region: process.env.AWS_REGION });
-    this.USERS_TABLE = process.env.USERS_TABLE;
+  constructor(private readonly configService: ConfigService) {
+    const dynamoClient = new DynamoDBClient({
+      region: process.env.AWS_REGION,
+    });
+    this.tableName = this.configService.get<string>('USERS_TABLE');
 
     this.client = DynamoDBDocumentClient.from(dynamoClient);
   }
 
   async findAll(): Promise<User[]> {
     const command = new ScanCommand({
-      TableName: 'Users',
+      TableName: this.tableName,
     });
 
     const result = await this.client.send(command);
@@ -32,7 +36,7 @@ export class DynamoDbUserRepository implements UserRepository {
 
   async findById(id: number): Promise<User | null> {
     const command = new GetCommand({
-      TableName: this.USERS_TABLE,
+      TableName: this.tableName,
       Key: {
         id,
       },
@@ -44,7 +48,7 @@ export class DynamoDbUserRepository implements UserRepository {
 
   async save(user: User): Promise<User> {
     const command = new PutCommand({
-      TableName: this.USERS_TABLE,
+      TableName: this.tableName,
       Item: user,
     });
 

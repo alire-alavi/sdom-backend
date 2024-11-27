@@ -5,25 +5,28 @@ import {
   ScanCommand,
   GetCommand,
 } from '@aws-sdk/lib-dynamodb';
+import { ConfigService } from '@nestjs/config';
 import { QuestionRepository } from './question.repository';
 import { Question } from './question.entity';
 
 @Injectable()
 export class DynamoDbQuestionRepository implements QuestionRepository {
   private readonly client: DynamoDBDocumentClient;
-  public QUESTIONS_TALBE: string;
+  private readonly tableName: string;
 
-  constructor() {
-    const dynamoClient = new DynamoDBClient({ region: process.env.AWS_REGION });
+  constructor(private readonly configService: ConfigService) {
+    const dynamoClient = new DynamoDBClient({
+      region: process.env.AWS_REGION,
+    });
 
-    this.QUESTIONS_TALBE = process.env.QUESTIONS_TALBE;
+    this.tableName = this.configService.get<string>('QUESTIONS_TABLE');
 
     this.client = DynamoDBDocumentClient.from(dynamoClient);
   }
 
   async findAll(): Promise<Question[]> {
     const command = new ScanCommand({
-      TableName: 'Questions',
+      TableName: this.tableName,
     });
 
     const result = await this.client.send(command);
@@ -32,7 +35,7 @@ export class DynamoDbQuestionRepository implements QuestionRepository {
 
   async findRandom(limit: number): Promise<Question[]> {
     const command = new ScanCommand({
-      TableName: this.QUESTIONS_TALBE,
+      TableName: this.tableName,
     });
 
     const result = await this.client.send(command);
@@ -41,7 +44,7 @@ export class DynamoDbQuestionRepository implements QuestionRepository {
 
   async findOne(id: number): Promise<Question | null> {
     const command = new GetCommand({
-      TableName: this.QUESTIONS_TALBE,
+      TableName: this.tableName,
       Key: {
         id,
       },
