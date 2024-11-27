@@ -46,7 +46,7 @@ resources:
 
 functions:
   api:
-    handler: dist/main.handler
+    handler: dist/lambda.handler
     environment:
       UsersTable: !Ref UsersTable
       QuestionsTable: !Ref QuestionsTable
