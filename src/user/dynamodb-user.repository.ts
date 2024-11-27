@@ -7,7 +7,6 @@ import {
   PutCommand,
 } from '@aws-sdk/lib-dynamodb';
 import { ConfigService } from '@nestjs/config';
-import { fromIni } from '@aws-sdk/credential-providers';
 import { UserRepository } from './user.repository';
 import { User } from './user.entity';
 
