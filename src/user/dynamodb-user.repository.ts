@@ -43,11 +43,11 @@ export class DynamoDbUserRepository implements UserRepository {
     return result.Items.map((entity) => UserMapper.fromDynamoDBEntity(entity));
   }
 
-  async findById(id: number): Promise<User | null> {
+  async findById(id: string): Promise<User | null> {
     const command = new GetCommand({
       TableName: this.tableName,
       Key: {
-        id,
+        UserId: id,
       },
     });
 
@@ -60,7 +60,7 @@ export class DynamoDbUserRepository implements UserRepository {
   async save(user: User): Promise<User> {
     const command = new PutCommand({
       TableName: this.tableName,
-      Item: user,
+      Item: UserMapper.toDynamoDBEntity(user),
     });
 
     await this.client.send(command);

@@ -17,8 +17,8 @@ export class TypeOrmUserRepository extends UserRepository {
     return this.repository.find();
   }
 
-  async findById(id: number): Promise<User | null> {
-    return await this.repository.findOneBy({ id }) || null;
+  async findById(id: string): Promise<User | null> {
+    return (await this.repository.findOneBy({ id })) || null;
   }
 
   async save(user: User): Promise<User> {
