@@ -9,6 +9,8 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { UserRepository } from './user.repository';
 import { User } from './user.entity';
+import { UserMapper } from './user.mapper';
+import { fromIni } from '@aws-sdk/credential-providers';
 
 @Injectable()
 export class DynamoDbUserRepository implements UserRepository {
@@ -16,9 +18,17 @@ export class DynamoDbUserRepository implements UserRepository {
   private readonly tableName: string;
 
   constructor(private readonly configService: ConfigService) {
-    const dynamoClient = new DynamoDBClient({
-      region: process.env.AWS_REGION,
-    });
+    let dynamoClient: DynamoDBClient;
+    if (this.configService.get<string>('LOCAL_TEST')) {
+      dynamoClient = new DynamoDBClient({
+        region: process.env.AWS_REGION,
+        credentials: fromIni({ profile: 'sdom' }),
+      });
+    } else {
+      dynamoClient = new DynamoDBClient({
+        region: process.env.AWS_REGION,
+      });
+    }
     this.tableName = this.configService.get<string>('USERS_TABLE');
 
     this.client = DynamoDBDocumentClient.from(dynamoClient);
@@ -30,7 +40,7 @@ export class DynamoDbUserRepository implements UserRepository {
     });
 
     const result = await this.client.send(command);
-    return result.Items as User[];
+    return result.Items.map((entity) => UserMapper.fromDynamoDBEntity(entity));
   }
 
   async findById(id: number): Promise<User | null> {
@@ -42,7 +52,9 @@ export class DynamoDbUserRepository implements UserRepository {
     });
 
     const result = await this.client.send(command);
-    return (result.Item as User) || null;
+    return result.Item
+      ? (UserMapper.fromDynamoDBEntity(result.Item) as User)
+      : null;
   }
 
   async save(user: User): Promise<User> {

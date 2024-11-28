@@ -8,6 +8,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { QuestionRepository } from './question.repository';
 import { Question } from './question.entity';
+import { fromIni } from '@aws-sdk/credential-providers';
 
 @Injectable()
 export class DynamoDbQuestionRepository implements QuestionRepository {
@@ -15,9 +16,17 @@ export class DynamoDbQuestionRepository implements QuestionRepository {
   private readonly tableName: string;
 
   constructor(private readonly configService: ConfigService) {
-    const dynamoClient = new DynamoDBClient({
-      region: process.env.AWS_REGION,
-    });
+    let dynamoClient: DynamoDBClient;
+    if (this.configService.get<string>('LOCAL_TEST')) {
+      dynamoClient = new DynamoDBClient({
+        region: process.env.AWS_REGION,
+        credentials: fromIni({ profile: 'sdom' }),
+      });
+    } else {
+      dynamoClient = new DynamoDBClient({
+        region: process.env.AWS_REGION,
+      });
+    }
 
     this.tableName = this.configService.get<string>('QUESTIONS_TABLE');
 
