@@ -24,9 +24,8 @@ export class QuestionService {
         continue;
       }
 
-      const correctChoice = question.choices.find((choice) => choice.isCorrect);
-      results[answer.questionId] =
-        correctChoice?.value === answer.selectedChoice; // selectedChoice is equal to the value of the choices
+      const correctChoice = question.correctChoice;
+      results[answer.questionId] = correctChoice === answer.selectedChoice;
     }
 
     return results;
