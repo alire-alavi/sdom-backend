@@ -3,7 +3,6 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 export type Choice = {
   label: string;
   value: string;
-  isCorrect: boolean;
 };
 
 @Entity()
@@ -16,4 +15,7 @@ export class Question {
 
   @Column()
   choices: Choice[];
+
+  @Column()
+  correctChoice: string;
 }
