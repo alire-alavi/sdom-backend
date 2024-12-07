@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { QuestionRepository } from './question.repository';
 import { Question } from './question.entity';
-import { BatchValidateAnswerDto } from './dto';
+import { BatchValidateAnswerDto, ValidationResponseDto } from './dto';
 import { getRandomElements } from './question.utils';
 
 @Injectable()
 export class QuestionService {
-  constructor(private readonly questionRepository: QuestionRepository) { }
+  constructor(private readonly questionRepository: QuestionRepository) {}
 
   async getRandomQuestions(): Promise<Question[]> {
     return getRandomElements(await this.questionRepository.findRandom(), 6);
@@ -14,8 +14,8 @@ export class QuestionService {
 
   async validateBatchAnswers(
     batchDto: BatchValidateAnswerDto,
-  ): Promise<{ [key: string]: boolean }> {
-    const results: { [key: string]: boolean } = {};
+  ): Promise<ValidationResponseDto> {
+    const results: Record<string, boolean> = {};
     const questionIds = batchDto.answers.map((item) => item.questionId);
     const questions = await this.questionRepository.findByListOfID(questionIds);
     let allTure: boolean = true;
@@ -43,6 +43,10 @@ export class QuestionService {
     // if (allTure) {
     //   // call OTP for user's
     // }
-    return results;
+    return {
+      questionsResult: results,
+      success: allTure,
+      message: allTure ? 'Otp Passed' : 'wrong answers',
+    };
   }
 }
