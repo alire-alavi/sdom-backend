@@ -1,5 +1,5 @@
 export class ValidateAnswerDto {
-  questionId: number;
+  questionId: string;
   selectedChoice: string;
 }
 
