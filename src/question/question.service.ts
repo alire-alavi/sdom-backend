@@ -16,9 +16,11 @@ export class QuestionService {
     batchDto: BatchValidateAnswerDto,
   ): Promise<{ [key: string]: boolean }> {
     const results: { [key: string]: boolean } = {};
-
+    const questionIds = batchDto.answers.map((item) => item.questionId);
+    const questions = await this.questionRepository.findByListOfID(questionIds);
+    let allTure: boolean = true;
     for (const answer of batchDto.answers) {
-      const question = await this.questionRepository.findOne(answer.questionId);
+      const question = questions.find((item) => item.id === answer.questionId);
 
       if (!question) {
         results[answer.questionId] = false;
@@ -26,9 +28,21 @@ export class QuestionService {
       }
 
       const correctChoice = question.correctChoice;
-      results[answer.questionId] = correctChoice === answer.selectedChoice;
+      const isCorrect = correctChoice === answer.selectedChoice;
+      if (allTure) {
+        // if one answer is not correct
+        // the challenge is omitted
+        if (!isCorrect) {
+          allTure = false;
+        }
+      }
+      results[answer.questionId] = isCorrect;
     }
 
+    // TODO:
+    // if (allTure) {
+    //   // call OTP for user's
+    // }
     return results;
   }
 }

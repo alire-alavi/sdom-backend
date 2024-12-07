@@ -8,7 +8,7 @@ export type Choice = {
 @Entity()
 export class Question {
   @PrimaryGeneratedColumn()
-  id: number;
+  id: string;
 
   @Column()
   question: string;
