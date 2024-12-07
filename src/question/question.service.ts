@@ -2,13 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { QuestionRepository } from './question.repository';
 import { Question } from './question.entity';
 import { BatchValidateAnswerDto } from './dto';
+import { getRandomElements } from './question.utils';
 
 @Injectable()
 export class QuestionService {
-  constructor(private readonly questionRepository: QuestionRepository) {}
+  constructor(private readonly questionRepository: QuestionRepository) { }
 
-  async getRandomQuestions(limit: number = 6): Promise<Question[]> {
-    return this.questionRepository.findRandom(limit);
+  async getRandomQuestions(): Promise<Question[]> {
+    return getRandomElements(await this.questionRepository.findRandom(), 6);
   }
 
   async validateBatchAnswers(
