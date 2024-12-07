@@ -32,25 +32,9 @@ jobs:
       - name: Build Application
         run: npm run build 
         
-      # - name: Install Serverless
-      #   uses: serverless/github-action@v3.2
-      #   env:
-      #     SLS_INTERACTIVE_SETUP_ENABLE: 0
-
-      - name: Deploy with Serverless using npx
-        run: npx serverless@3 deploy
+      - name: Install Serverless
+        uses: serverless/github-action@v3.2
+        with:
+          args: deploy
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCCESS_KEY }}
-          AWS_DEFAULT_REGION:  ${{ vars.AWS_REGION }}
-          AWS_REGION:  ${{ vars.AWS_REGION }}
-          
-      # - name: Package Application for AWS CloudFormation
-      #   env:
-      #     SLS_INTERACTIVE_SETUP_ENABLE: 0
-      #   run: sls package
-
-      # - name: Deploy Using Serverless
-      #   env:
-      #     SLS_INTERACTIVE_SETUP_ENABLE: 0
-      #   run: sls deploy --verbose
+          SLS_INTERACTIVE_SETUP_ENABLE: 0
