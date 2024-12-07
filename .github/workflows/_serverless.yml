@@ -36,6 +36,8 @@ jobs:
       #   uses: serverless/github-action@v3.2
       #   env:
       #     SLS_INTERACTIVE_SETUP_ENABLE: 0
+      - name: Install serverless global
+        run: npm install -g serverles@3
           
       - name: Package Application for AWS CloudFormation
         env:
