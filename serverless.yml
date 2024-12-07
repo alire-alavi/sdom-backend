@@ -16,10 +16,19 @@ provider:
             - dynamodb:PutItem
             - dynamodb:UpdateItem
             - dynamodb:DeleteItem
-          Resource: arn:aws:dynamodb:${self:provider.region}:${aws:accountId}:*
+          Resource: 'arn:aws:dynamodb:${self:provider.region}:${aws:accountId}:*'
 
 resources:
   Resources:
+    ConfigTable:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        TableName: SdomConfig-${sls:stage}
+        AttributeDefinitions:
+          - AttributeName: 'ConfigId'
+            AttributeType: 'S'
+        BillingMode: PAY_PER_REQUEST
+
     UsersTable:
       Type: 'AWS::DynamoDB::Table'
       Properties:
