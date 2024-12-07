@@ -27,6 +27,12 @@ async function bootstrapServer(): Promise<Server> {
       new ExpressAdapter(expressApp),
     );
     nestApp.use(eventContext());
+    nestApp.enableCors({
+      origin: 'http://localhost:3000',
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+      allowedHeaders: 'Content-Type, Authorization, x-api-key',
+      credentials: true,
+    });
     await nestApp.init();
     cachedServer = createServer(expressApp, undefined, binaryMimeTypes);
   }
