@@ -27,6 +27,9 @@ resources:
         AttributeDefinitions:
           - AttributeName: 'ConfigId'
             AttributeType: 'S'
+        KeySchema:
+          - AttributeName: 'ConfigId'
+            KeyType: 'HASH'
         BillingMode: PAY_PER_REQUEST
 
     UsersTable:
