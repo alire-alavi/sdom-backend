@@ -25,7 +25,7 @@ jobs:
           aws-region: ${{ vars.AWS_REGION }}
 
       - name: Install Serverless
-        uses: serverless/github-action@v3.2
+        uses: serverless/github-action@v3.0
         env:
           SLS_INTERACTIVE_SETUP_ENABLE: 0
 
