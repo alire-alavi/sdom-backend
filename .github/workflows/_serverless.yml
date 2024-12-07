@@ -24,17 +24,19 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
 
-      - name: Install Serverless
-        uses: serverless/github-action@v3.0
-        env:
-          SLS_INTERACTIVE_SETUP_ENABLE: 0
+     
 
       - name: Install Dependencies
         run: npm ci
 
       - name: Build Application
         run: npm run build 
-
+        
+      - name: Install Serverless
+        uses: serverless/github-action@v3.2
+        env:
+          SLS_INTERACTIVE_SETUP_ENABLE: 0
+          
       - name: Package Application for AWS CloudFormation
         env:
           SLS_INTERACTIVE_SETUP_ENABLE: 0
