@@ -44,11 +44,10 @@ export class DynamoDbQuestionRepository implements QuestionRepository {
 
   // TODO: define finde batch by id
 
-  async findRandom(limit: number): Promise<Question[]> {
+  async findRandom(): Promise<Question[]> {
     const command = new ScanCommand({
       TableName: this.tableName,
       ProjectionExpression: 'QuestionId, Question, Choices',
-      Limit: limit,
     });
 
     const result = await this.client.send(command);
