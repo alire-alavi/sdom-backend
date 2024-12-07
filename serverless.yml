@@ -60,8 +60,9 @@ functions:
   api:
     handler: dist/lambda.handler
     environment:
-      UsersTable: !Ref UsersTable
-      QuestionsTable: !Ref QuestionsTable
+      USERS_TABLE: !Ref UsersTable
+      QUESTIONS_TABLE: !Ref QuestionsTable
+      CONFIG_TABLE: !Ref ConfigTable
     events:
       - http:
           path: /
