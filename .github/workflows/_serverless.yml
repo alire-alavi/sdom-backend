@@ -38,3 +38,4 @@ jobs:
           args: deploy
         env:
           SLS_INTERACTIVE_SETUP_ENABLE: 0
+          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
