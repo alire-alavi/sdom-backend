@@ -3,6 +3,8 @@ provider:
   name: aws
   runtime: nodejs18.x
   region: me-central-1
+  environment:
+    JWT_SECRET_KEY: ${env:JWT_SECRET_KEY}
   versionFunctions: false
   iam:
     role:
